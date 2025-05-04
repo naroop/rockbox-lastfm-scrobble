@@ -40,8 +40,8 @@
           </template>
         </Column>
         <Column>
-          <template #body="{ data }">
-            <Button icon="pi pi-times" severity="danger" variant="text" rounded></Button>
+          <template #body="slotProps">
+            <Button icon="pi pi-times" severity="danger" variant="text" rounded @click="handleRemoveLog(slotProps.index)"></Button>
           </template>
         </Column>
 
@@ -144,17 +144,20 @@ const convertLength = (length: number): string => {
   }
 };
 
-const convertUnixToLocalTime = (naiveUnixTime: number): string => {
+const convertUnixToLocalTime = (naiveUnixTime: number) => {
   const localOffsetMinutes = new Date().getTimezoneOffset();
-  const realTime = naiveUnixTime - localOffsetMinutes * 60;
-
+  const realTime = naiveUnixTime + localOffsetMinutes * 60;
   const date = new Date(realTime * 1000);
-  return date.toLocaleTimeString();
+  return date.toLocaleString();
+};
+
+const handleRemoveLog = (i: number) => {
+  logData.value.splice(i, 1);
 };
 
 // Lifecycle Hooks --------------------------------------------------------------------
-onMounted(async () => {
-  const res = await fetch('/.scrobbler.log');
-  logData.value = await parseLogFile(await res.blob());
-});
+// onMounted(async () => {
+//   const res = await fetch('/.scrobbler.log');
+//   logData.value = await parseLogFile(await res.blob());
+// });
 </script>
